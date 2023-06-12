@@ -89,6 +89,9 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
+        self._channel_freq_range = Range(90e6, 100e6, 100e3, 97.9e6, 200)
+        self._channel_freq_win = RangeWidget(self._channel_freq_range, self.set_channel_freq, 'Selected Frequency', "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._channel_freq_win)
         self._audio_gain_range = Range(0, 100, 1, 1, 200)
         self._audio_gain_win = RangeWidget(self._audio_gain_range, self.set_audio_gain, 'Audio Gain', "counter_slider", int, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._audio_gain_win)
@@ -110,7 +113,7 @@ class top_block(gr.top_block, Qt.QWidget):
                 decimation=5,
                 taps=[],
                 fractional_bw=0)
-        self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
+        self.qtgui_freq_sink_x_0_0 = qtgui.freq_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
             center_freq, #fc
@@ -119,16 +122,16 @@ class top_block(gr.top_block, Qt.QWidget):
             1,
             None # parent
         )
-        self.qtgui_freq_sink_x_0.set_update_time(0.10)
-        self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
-        self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
-        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
-        self.qtgui_freq_sink_x_0.enable_autoscale(False)
-        self.qtgui_freq_sink_x_0.enable_grid(False)
-        self.qtgui_freq_sink_x_0.set_fft_average(0.2)
-        self.qtgui_freq_sink_x_0.enable_axis_labels(True)
-        self.qtgui_freq_sink_x_0.enable_control_panel(False)
-        self.qtgui_freq_sink_x_0.set_fft_window_normalized(False)
+        self.qtgui_freq_sink_x_0_0.set_update_time(0.10)
+        self.qtgui_freq_sink_x_0_0.set_y_axis(-140, 10)
+        self.qtgui_freq_sink_x_0_0.set_y_label('Relative Gain', 'dB')
+        self.qtgui_freq_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
+        self.qtgui_freq_sink_x_0_0.enable_autoscale(False)
+        self.qtgui_freq_sink_x_0_0.enable_grid(False)
+        self.qtgui_freq_sink_x_0_0.set_fft_average(0.2)
+        self.qtgui_freq_sink_x_0_0.enable_axis_labels(True)
+        self.qtgui_freq_sink_x_0_0.enable_control_panel(False)
+        self.qtgui_freq_sink_x_0_0.set_fft_window_normalized(False)
 
 
 
@@ -143,15 +146,15 @@ class top_block(gr.top_block, Qt.QWidget):
 
         for i in range(1):
             if len(labels[i]) == 0:
-                self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
+                self.qtgui_freq_sink_x_0_0.set_line_label(i, "Data {0}".format(i))
             else:
-                self.qtgui_freq_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_freq_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_freq_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
+                self.qtgui_freq_sink_x_0_0.set_line_label(i, labels[i])
+            self.qtgui_freq_sink_x_0_0.set_line_width(i, widths[i])
+            self.qtgui_freq_sink_x_0_0.set_line_color(i, colors[i])
+            self.qtgui_freq_sink_x_0_0.set_line_alpha(i, alphas[i])
 
-        self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+        self._qtgui_freq_sink_x_0_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_0_win)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
             int(samp_rate/channel_width),
             firdes.low_pass(
@@ -179,10 +182,10 @@ class top_block(gr.top_block, Qt.QWidget):
         self.connect((self.analog_wfm_rcv_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.low_pass_filter_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.qtgui_freq_sink_x_0_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
         self.connect((self.soapy_rtlsdr_source_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.soapy_rtlsdr_source_0, 0), (self.qtgui_freq_sink_x_0, 0))
 
 
     def closeEvent(self, event):
@@ -221,7 +224,7 @@ class top_block(gr.top_block, Qt.QWidget):
     def set_center_freq(self, center_freq):
         self.center_freq = center_freq
         self.analog_sig_source_x_0.set_frequency(self.center_freq - self.channel_freq)
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.center_freq, self.band_width)
+        self.qtgui_freq_sink_x_0_0.set_frequency_range(self.center_freq, self.band_width)
         self.soapy_rtlsdr_source_0.set_frequency(0, self.center_freq)
 
     def get_band_width(self):
@@ -229,7 +232,7 @@ class top_block(gr.top_block, Qt.QWidget):
 
     def set_band_width(self, band_width):
         self.band_width = band_width
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.center_freq, self.band_width)
+        self.qtgui_freq_sink_x_0_0.set_frequency_range(self.center_freq, self.band_width)
 
     def get_audio_gain(self):
         return self.audio_gain

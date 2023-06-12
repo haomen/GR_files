@@ -78,6 +78,27 @@ blocks:
     rotation: 0
     state: true
 - name: channel_freq
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Selected Frequency
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: 90e6
+    step: 100e3
+    stop: 100e6
+    value: 97.9e6
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1168, 244.0]
+    rotation: 0
+    state: enabled
+- name: channel_freq
   id: variable
   parameters:
     comment: ''
@@ -88,7 +109,7 @@ blocks:
     bus_structure: null
     coordinate: [512, 12.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: channel_width
   id: variable
   parameters:
@@ -309,7 +330,7 @@ blocks:
     bus_structure: null
     coordinate: [400, 116.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_freq_sink_x_0_0
   id: qtgui_freq_sink_x
   parameters:
@@ -390,7 +411,7 @@ blocks:
     bus_structure: null
     coordinate: [608, 324.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: rational_resampler_xxx_0
   id: rational_resampler_xxx
   parameters:
